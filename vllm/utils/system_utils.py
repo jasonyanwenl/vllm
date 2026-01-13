@@ -153,7 +153,7 @@ def get_mp_context():
     """
     _maybe_force_spawn()
     mp_method = envs.VLLM_WORKER_MULTIPROC_METHOD
-    return multiprocessing.get_context(mp_method)
+    return multiprocessing.get_context('spawn')
 
 
 def set_process_title(
