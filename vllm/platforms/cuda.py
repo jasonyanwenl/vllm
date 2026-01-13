@@ -604,6 +604,7 @@ class NonNvmlCudaPlatform(CudaPlatformBase):
 nvml_available = False
 try:
     try:
+        print("!!!nvmlInit")
         pynvml.nvmlInit()
         nvml_available = True
     except Exception:

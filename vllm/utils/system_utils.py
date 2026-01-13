@@ -131,6 +131,8 @@ def _maybe_force_spawn():
         reasons.append("CUDA is initialized")
     elif xpu_is_initialized():
         reasons.append("XPU is initialized")
+    
+    print(f"reasons: {reasons}")
 
     if reasons:
         logger.warning(

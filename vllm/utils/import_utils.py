@@ -108,6 +108,18 @@ def resolve_obj_by_qualname(qualname: str) -> Any:
     Resolve an object by its fully-qualified class name.
     """
     module_name, obj_name = qualname.rsplit(".", 1)
+    print("!!!resolve_obj_by_qualname", module_name, obj_name)
+    
+    print("!!!resolve_obj_by_qualname")
+    from vllm.utils.import_utils import import_pynvml
+    pynvml = import_pynvml()
+    pynvml.nvmlInit()
+    print("!!!nvmlInit")
+    print(pynvml.nvmlDeviceGetCount())
+    pynvml.nvmlShutdown()
+    print("!!!nvmlShutdown")
+    print("!!!resolve_obj_by_qualname done")
+
     module = importlib.import_module(module_name)
     return getattr(module, obj_name)
 

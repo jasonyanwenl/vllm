@@ -97,6 +97,7 @@ class CoreEngineProcManager:
         client_handshake_address: str | None = None,
     ):
         context = get_mp_context()
+        print(f"context: {context}")
         common_kwargs = {
             "vllm_config": vllm_config,
             "local_client": local_client,
@@ -131,11 +132,27 @@ class CoreEngineProcManager:
         self._finalizer = weakref.finalize(self, shutdown, self.processes)
 
         data_parallel = vllm_config.parallel_config.data_parallel_size > 1
+
+
+        print("!!!CoreEngineProcManager before start", len(self.processes), self.processes[0].name)
+        from vllm.utils.import_utils import import_pynvml
+        pynvml = import_pynvml()
+        pynvml.nvmlInit()
+        print("!!!nvmlInit")
+        print(pynvml.nvmlDeviceGetCount())
+        pynvml.nvmlShutdown()
+        print("!!!nvmlShutdown")
+        print("!!!CoreEngineProcManager before start done")
+
         try:
             for proc, local_dp_rank in zip(self.processes, local_dp_ranks):
                 # Adjust device control in DP for non-CUDA platforms
                 # as well as external and ray launchers
                 # For CUDA platforms, we use torch.cuda.set_device()
+                print(f"data_parallel: {data_parallel}")
+                print(f"not current_platform.is_cuda_alike(): {not current_platform.is_cuda_alike()}")
+                print(f"vllm_config.parallel_config.use_ray: {vllm_config.parallel_config.use_ray}")
+                print(f"condition: {data_parallel and (not current_platform.is_cuda_alike() or vllm_config.parallel_config.use_ray)}")
                 with (
                     set_device_control_env_var(vllm_config, local_dp_rank)
                     if (
@@ -147,6 +164,16 @@ class CoreEngineProcManager:
                     )
                     else contextlib.nullcontext()
                 ):
+                    print("!!!CoreEngineProcManager before proc.start", local_dp_rank)
+                    from vllm.utils.import_utils import import_pynvml
+                    pynvml = import_pynvml()
+                    pynvml.nvmlInit()
+                    print("!!!nvmlInit")
+                    print(pynvml.nvmlDeviceGetCount())
+                    pynvml.nvmlShutdown()
+                    print("!!!nvmlShutdown")
+                    print("!!!CoreEngineProcManager before proc.start done", local_dp_rank)
+
                     proc.start()
         finally:
             # Kill other procs if not all are running.
@@ -900,6 +927,15 @@ def launch_core_engines(
 
         # Start local engines.
         if local_engine_count:
+            print("!!!CoreEngineProcManager before local_engine_manager", local_engine_count)
+            from vllm.utils.import_utils import import_pynvml
+            pynvml = import_pynvml()
+            pynvml.nvmlInit()
+            print("!!!nvmlInit")
+            print(pynvml.nvmlDeviceGetCount())
+            pynvml.nvmlShutdown()
+            print("!!!nvmlShutdown")
+            print("!!!CoreEngineProcManager before local_engine_manager done", local_engine_count)
             local_engine_manager = CoreEngineProcManager(
                 EngineCoreProc.run_engine_core,
                 vllm_config=vllm_config,

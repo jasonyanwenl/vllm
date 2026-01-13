@@ -250,6 +250,7 @@ class WorkerWrapperBase:
 
         parallel_config = vllm_config.parallel_config
         if isinstance(parallel_config.worker_cls, str):
+            print("!!!resolve_obj_by_qualname", parallel_config.worker_cls)
             worker_class: type[WorkerBase] = resolve_obj_by_qualname(
                 parallel_config.worker_cls
             )

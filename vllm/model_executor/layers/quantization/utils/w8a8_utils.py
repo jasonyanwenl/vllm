@@ -44,6 +44,15 @@ def sparse_cutlass_supported() -> bool:
 def cutlass_fp8_supported() -> bool:
     if not current_platform.is_cuda():
         return False
+    
+    print("!!!cutlass_fp8_supported")
+    from vllm.utils.import_utils import import_pynvml
+    pynvml = import_pynvml()
+    pynvml.nvmlInit()
+    print("!!!nvmlInit")
+    print(pynvml.nvmlDeviceGetCount())
+    pynvml.nvmlShutdown()
+    print("!!!nvmlShutdown")
 
     capability_tuple = current_platform.get_device_capability()
     capability = -1 if capability_tuple is None else capability_tuple.to_int()

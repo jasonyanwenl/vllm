@@ -1052,6 +1052,8 @@ _nvmlGetFunctionPointer_cache = dict() # function pointers are cached to prevent
 def _nvmlGetFunctionPointer(name):
     global nvmlLib
 
+    print(f"!!!_nvmlGetFunctionPointer: {name}, nvmlLib: {nvmlLib}")
+
     if name in _nvmlGetFunctionPointer_cache:
         return _nvmlGetFunctionPointer_cache[name]
 
@@ -2372,14 +2374,19 @@ def throwOnVersionMismatch(func):
 
 ## C function wrappers ##
 def nvmlInitWithFlags(flags):
+    print("!!!nvmlInitWithFlags")
     _LoadNvmlLibrary()
+    print("!!!_LoadNvmlLibrary")
 
     #
     # Initialize the library
     #
     fn = _nvmlGetFunctionPointer("nvmlInitWithFlags")
+    print(f"!!!_nvmlGetFunctionPointer: {fn}")
     ret = fn(flags)
+    print(f"!!!_nvmlCheckReturn: {ret}")
     _nvmlCheckReturn(ret)
+    print("!!!_nvmlCheckReturn done")
 
     # Atomically update refcount
     global _nvmlLib_refcount

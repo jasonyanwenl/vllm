@@ -103,6 +103,15 @@ class EngineCore:
         self.log_stats = log_stats
 
         # Setup Model.
+        print("!!!EngineCore")
+        from vllm.utils.import_utils import import_pynvml
+        pynvml = import_pynvml()
+        pynvml.nvmlInit()
+        print("!!!nvmlInit")
+        print(pynvml.nvmlDeviceGetCount())
+        pynvml.nvmlShutdown()
+        print("!!!nvmlShutdown")
+        print("!!!EngineCore done")
         self.model_executor = executor_class(vllm_config)
         if executor_fail_callback is not None:
             self.model_executor.register_failure_callback(executor_fail_callback)
@@ -660,6 +669,16 @@ class EngineCoreProc(EngineCore):
         identity = self.engine_index.to_bytes(length=2, byteorder="little")
         self.engines_running = False
 
+        print("!!!EngineCoreProc before handshake")
+        from vllm.utils.import_utils import import_pynvml
+        pynvml = import_pynvml()
+        pynvml.nvmlInit()
+        print("!!!nvmlInit")
+        print(pynvml.nvmlDeviceGetCount())
+        pynvml.nvmlShutdown()
+        print("!!!nvmlShutdown")
+        print("!!!EngineCoreProc before handshake done")
+
         with self._perform_handshakes(
             handshake_address,
             identity,
@@ -667,6 +686,16 @@ class EngineCoreProc(EngineCore):
             vllm_config,
             client_handshake_address,
         ) as addresses:
+            print("!!!EngineCoreProc")
+            from vllm.utils.import_utils import import_pynvml
+            pynvml = import_pynvml()
+            pynvml.nvmlInit()
+            print("!!!nvmlInit")
+            print(pynvml.nvmlDeviceGetCount())
+            pynvml.nvmlShutdown()
+            print("!!!nvmlShutdown")
+            print("!!!EngineCoreProc done")
+
             self.client_count = len(addresses.outputs)
 
             # Set up data parallel environment.
@@ -882,6 +911,16 @@ class EngineCoreProc(EngineCore):
     def run_engine_core(*args, dp_rank: int = 0, local_dp_rank: int = 0, **kwargs):
         """Launch EngineCore busy loop in background process."""
 
+        print("!!!EngineCoreProc run_engine_core")
+        from vllm.utils.import_utils import import_pynvml
+        pynvml = import_pynvml()
+        pynvml.nvmlInit()
+        print("!!!nvmlInit")
+        print(pynvml.nvmlDeviceGetCount())
+        pynvml.nvmlShutdown()
+        print("!!!nvmlShutdown")
+        print("!!!EngineCoreProc run_engine_core done")
+        
         # Signal handler used for graceful termination.
         # SystemExit exception is only raised once to allow this and worker
         # processes to terminate without error

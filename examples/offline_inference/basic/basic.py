@@ -15,6 +15,10 @@ sampling_params = SamplingParams(temperature=0.8, top_p=0.95)
 
 
 def main():
+    import torch
+    print("cuda is available:",torch.cuda.is_available())
+    print("device count:",torch.cuda.device_count())
+    print("init vllm")
     # Create an LLM.
     llm = LLM(model="facebook/opt-125m", gpu_memory_utilization=0.85)
     # Generate texts from the prompts.
