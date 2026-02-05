@@ -207,6 +207,11 @@ class AsyncGPUModelRunnerOutput(AsyncModelRunnerOutput):
         self._logprobs_tensors = logprobs_tensors
 
         # Initiate the copy on a separate stream, but do not synchronize it.
+        # #region agent log
+        import json
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "C", "location": "v1/worker/gpu_model_runner.py:210", "message": "GPUModelRunner._prepare_async_output_copy calling torch.cuda.current_stream", "data": {}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
         default_stream = torch.cuda.current_stream()
         with torch.cuda.stream(async_output_copy_stream):
             async_output_copy_stream.wait_stream(default_stream)
@@ -274,6 +279,11 @@ class GPUModelRunner(
         vllm_config: VllmConfig,
         device: torch.device,
     ):
+        # #region agent log
+        import json
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "C", "location": "v1/worker/gpu_model_runner.py:272", "message": "GPUModelRunner.__init__ entry", "data": {"device": str(device), "device_type": device.type}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
         self.vllm_config = vllm_config
         self.model_config = vllm_config.model_config
         self.cache_config = vllm_config.cache_config

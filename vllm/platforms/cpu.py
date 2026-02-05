@@ -225,7 +225,16 @@ class CpuPlatform(Platform):
             )
             parallel_config.distributed_executor_backend = "mp"
         if parallel_config.worker_cls == "auto":
+            # #region agent log
+            import json
+            with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+                f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "A", "location": "platforms/cpu.py:228", "message": "CpuPlatform.configure setting worker_cls", "data": {"before": parallel_config.worker_cls}, "timestamp": __import__("time").time()}) + "\n")
+            # #endregion
             parallel_config.worker_cls = "vllm.v1.worker.cpu_worker.CPUWorker"
+            # #region agent log
+            with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+                f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "A", "location": "platforms/cpu.py:228", "message": "CpuPlatform.configure set worker_cls", "data": {"after": parallel_config.worker_cls}, "timestamp": __import__("time").time()}) + "\n")
+            # #endregion
         # Disable DBO
         if parallel_config.enable_dbo:
             logger.warning("Dual-Batch Overlap is not supported on CPU, disabled.")

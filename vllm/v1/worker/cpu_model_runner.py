@@ -17,8 +17,17 @@ logger = init_logger(__name__)
 
 class CPUModelRunner(GPUModelRunner):
     def __init__(self, vllm_config: VllmConfig, device: torch.device):
+        # #region agent log
+        import json
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/cpu_model_runner.py:19", "message": "CPUModelRunner.__init__ entry", "data": {"device": str(device)}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
         with _torch_cuda_wrapper():
             super().__init__(vllm_config, device)
+        # #region agent log
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/cpu_model_runner.py:21", "message": "CPUModelRunner.__init__ after super().__init__", "data": {}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
 
         assert device == torch.device("cpu")
         assert self.speculative_config is None, "spec decode is not supported."

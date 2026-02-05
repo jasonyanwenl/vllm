@@ -261,6 +261,11 @@ class Worker(WorkerBase):
         init_workspace_manager(self.device, num_ubatches)
 
         # Construct the model runner
+        # #region agent log
+        import json
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/gpu_worker.py:263", "message": "Worker.init_device creating GPUModelRunner", "data": {"use_v2": self.use_v2_model_runner, "device": str(self.device)}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
         if self.use_v2_model_runner:
             from vllm.v1.worker.gpu.model_runner import (
                 GPUModelRunner as GPUModelRunnerV2,
@@ -276,6 +281,10 @@ class Worker(WorkerBase):
             )
 
             self.model_runner = GPUModelRunnerV1(self.vllm_config, self.device)
+        # #region agent log
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/gpu_worker.py:278", "message": "Worker.init_device created GPUModelRunner", "data": {"model_runner_type": type(self.model_runner).__name__}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
 
         if self.rank == 0:
             # If usage stat is enabled, collect relevant info.

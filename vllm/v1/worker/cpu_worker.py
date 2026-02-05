@@ -99,9 +99,18 @@ class CPUWorker(Worker):
         set_random_seed(self.model_config.seed)
 
         # Construct the model runner
+        # #region agent log
+        import json
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/cpu_worker.py:101", "message": "CPUWorker.init_device creating CPUModelRunner", "data": {}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
         self.model_runner: CPUModelRunner = CPUModelRunner(
             self.vllm_config, torch.device("cpu")
         )
+        # #region agent log
+        with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+            f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/cpu_worker.py:104", "message": "CPUWorker.init_device created CPUModelRunner", "data": {"model_runner_type": type(self.model_runner).__name__}, "timestamp": __import__("time").time()}) + "\n")
+        # #endregion
 
     def sleep(self, level: int = 1) -> None:
         logger.warning("sleep mode is not supported on CPU, ignore it.")

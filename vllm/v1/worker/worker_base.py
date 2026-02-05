@@ -252,9 +252,18 @@ class WorkerWrapperBase:
         load_general_plugins()
 
         if isinstance(self.vllm_config.parallel_config.worker_cls, str):
+            # #region agent log
+            import json
+            with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+                f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/worker_base.py:254", "message": "WorkerWrapperBase.init_worker resolving worker_cls", "data": {"worker_cls_str": self.vllm_config.parallel_config.worker_cls}, "timestamp": __import__("time").time()}) + "\n")
+            # #endregion
             worker_class = resolve_obj_by_qualname(
                 self.vllm_config.parallel_config.worker_cls
             )
+            # #region agent log
+            with open("/home/ubuntu/vllm/.cursor/debug.log", "a") as f:
+                f.write(json.dumps({"sessionId": "debug-session", "runId": "run1", "hypothesisId": "B", "location": "v1/worker/worker_base.py:256", "message": "WorkerWrapperBase.init_worker resolved worker_class", "data": {"worker_class_name": worker_class.__name__, "worker_class_module": worker_class.__module__}, "timestamp": __import__("time").time()}) + "\n")
+            # #endregion
         else:
             raise ValueError(
                 "passing worker_cls is no longer supported. Please pass keep the class in a separate module and pass the qualified name of the class as a string."  # noqa: E501
