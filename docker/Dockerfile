@@ -547,6 +547,7 @@ RUN CUDA_VERSION_DASH=$(echo $CUDA_VERSION | cut -d. -f1,2 | tr '.' '-') && \
         cuda-nvcc-${CUDA_VERSION_DASH} \
         cuda-cudart-${CUDA_VERSION_DASH} \
         cuda-nvrtc-${CUDA_VERSION_DASH} \
+        cuda-nvrtc-dev-${CUDA_VERSION_DASH} \
         cuda-cuobjdump-${CUDA_VERSION_DASH} \
         libcurand-dev-${CUDA_VERSION_DASH} \
         libcublas-dev-${CUDA_VERSION_DASH} \
